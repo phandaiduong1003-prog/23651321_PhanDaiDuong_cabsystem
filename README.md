@@ -47,6 +47,7 @@ Xây dựng một nền tảng CAB mới nhằm:
 | Nhà cung cấp thanh toán | Xử lý các giao dịch thanh toán điện tử                                |
 | Nhà cung cấp thông báo  | Cung cấp các kênh gửi thông báo cho khách hàng và tài xế              |
 
+```mermaid
 flowchart TB
     A["CAB System"]
 
@@ -56,3 +57,4 @@ flowchart TB
     A --> E["Ban lãnh đạo<br/>Theo dõi báo cáo, doanh thu, hiệu quả hoạt động"]
     A --> F["Nhà cung cấp thanh toán<br/>Xử lý giao dịch thanh toán điện tử"]
     A --> G["Nhà cung cấp thông báo<br/>Cung cấp kênh gửi thông báo"]
+```

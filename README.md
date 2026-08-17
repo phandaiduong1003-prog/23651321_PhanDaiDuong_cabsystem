@@ -224,6 +224,78 @@ b6 phân rã ra các yêu cầu chức năng
 | FR-08.7 | Lưu vết các thao tác quan trọng                                             |
 
 b7 tiến hành vẽ usecase
+
+```mermaid
+flowchart LR
+
+    KH["👤 Khách hàng"]
+    TX["👤 Tài xế"]
+    NV["👤 Nhân viên vận hành"]
+    TT["💳 Nhà cung cấp thanh toán"]
+    TB["🔔 Nhà cung cấp thông báo"]
+
+    subgraph CAB["CAB SYSTEM"]
+        UC1(("Đăng ký / Đăng nhập"))
+        UC2(("Quản lý thông tin cá nhân"))
+        UC3(("Đặt xe"))
+        UC4(("Theo dõi chuyến đi"))
+        UC5(("Xem lịch sử chuyến"))
+        UC6(("Thanh toán"))
+        UC7(("Đánh giá tài xế"))
+
+        UC8(("Quản lý hồ sơ tài xế"))
+        UC9(("Quản lý phương tiện"))
+        UC10(("Nhận chuyến"))
+        UC11(("Cập nhật trạng thái chuyến"))
+        UC12(("Cập nhật vị trí"))
+
+        UC13(("Tìm tài xế"))
+        UC14(("Phân công tài xế"))
+
+        UC15(("Quản lý khách hàng"))
+        UC16(("Quản lý tài xế"))
+        UC17(("Quản lý phương tiện"))
+        UC18(("Quản lý chuyến đi"))
+        UC19(("Xử lý sự cố"))
+        UC20(("Tra cứu giao dịch"))
+
+        UC21(("Báo cáo"))
+        UC22(("Quản lý phân quyền"))
+        UC23(("Gửi thông báo"))
+    end
+
+    KH --- UC1
+    KH --- UC2
+    KH --- UC3
+    KH --- UC4
+    KH --- UC5
+    KH --- UC6
+    KH --- UC7
+
+    TX --- UC1
+    TX --- UC8
+    TX --- UC9
+    TX --- UC10
+    TX --- UC11
+    TX --- UC12
+
+    NV --- UC15
+    NV --- UC16
+    NV --- UC17
+    NV --- UC18
+    NV --- UC19
+    NV --- UC20
+    NV --- UC22
+    NV --- UC21
+
+    UC3 -.->|include| UC13
+    UC13 -.->|include| UC14
+    UC6 --- TT
+    UC23 --- TB
+    KH --- UC23
+    TX --- UC23
+```
+
 b8 đặt tả usecase
 b9 phân tích qui trình nghiệp vụ 
 b10 phân tích các quy tắt, nghiệp vụ

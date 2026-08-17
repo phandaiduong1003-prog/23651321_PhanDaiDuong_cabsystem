@@ -47,12 +47,3 @@ Xây dựng một nền tảng CAB mới nhằm:
 | Nhà cung cấp thanh toán | Xử lý các giao dịch thanh toán điện tử                                |
 | Nhà cung cấp thông báo  | Cung cấp các kênh gửi thông báo cho khách hàng và tài xế              |
 
-flowchart TB
-    A["CAB System"]
-
-    A --> B["Khách hàng<br/>Đặt xe, theo dõi chuyến, thanh toán, đánh giá tài xế"]
-    A --> C["Tài xế<br/>Nhận chuyến, thực hiện chuyến, cập nhật trạng thái"]
-    A --> D["Nhân viên vận hành<br/>Quản lý khách hàng, tài xế, phương tiện, chuyến đi"]
-    A --> E["Ban lãnh đạo<br/>Theo dõi báo cáo, doanh thu, hiệu quả hoạt động"]
-    A --> F["Nhà cung cấp thanh toán<br/>Xử lý giao dịch thanh toán điện tử"]
-    A --> G["Nhà cung cấp thông báo<br/>Cung cấp kênh gửi thông báo"]

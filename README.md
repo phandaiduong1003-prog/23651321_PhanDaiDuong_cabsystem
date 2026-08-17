@@ -47,14 +47,33 @@ Xây dựng một nền tảng CAB mới nhằm:
 | Nhà cung cấp thanh toán | Xử lý các giao dịch thanh toán điện tử                                |
 | Nhà cung cấp thông báo  | Cung cấp các kênh gửi thông báo cho khách hàng và tài xế              |
 
-```mermaid
-flowchart TB
-    A["CAB System"]
+## Ma trận các bên liên quan
 
-    A --> B["Khách hàng<br/>Đặt xe, theo dõi chuyến, thanh toán, đánh giá tài xế"]
-    A --> C["Tài xế<br/>Nhận chuyến, thực hiện chuyến, cập nhật trạng thái"]
-    A --> D["Nhân viên vận hành<br/>Quản lý khách hàng, tài xế, phương tiện, chuyến đi"]
-    A --> E["Ban lãnh đạo<br/>Theo dõi báo cáo, doanh thu, hiệu quả hoạt động"]
-    A --> F["Nhà cung cấp thanh toán<br/>Xử lý giao dịch thanh toán điện tử"]
-    A --> G["Nhà cung cấp thông báo<br/>Cung cấp kênh gửi thông báo"]
+| Bên liên quan | Mức độ ảnh hưởng | Mức độ quan tâm | Chiến lược |
+|---|---|---|---|
+| **Ban lãnh đạo** | Cao | Cao | Quản lý chặt chẽ |
+| **Nhân viên vận hành** | Cao | Cao | Quản lý chặt chẽ |
+| **Khách hàng** | Cao | Cao | Quản lý chặt chẽ |
+| **Tài xế** | Cao | Cao | Quản lý chặt chẽ |
+| **Nhà cung cấp thanh toán** | Cao | Trung bình | Giữ hài lòng |
+| **Nhà cung cấp thông báo** | Trung bình | Trung bình | Theo dõi và phối hợp |
+
+### Phân loại Stakeholder
+
+```mermaid
+quadrantChart
+    title Ma trận các bên liên quan
+    x-axis "Mức độ quan tâm thấp" --> "Mức độ quan tâm cao"
+    y-axis "Mức độ ảnh hưởng thấp" --> "Mức độ ảnh hưởng cao"
+    quadrant-1 "Quản lý chặt chẽ"
+    quadrant-2 "Giữ hài lòng"
+    quadrant-3 "Theo dõi"
+    quadrant-4 "Theo dõi và cung cấp thông tin"
+
+    "Ban lãnh đạo": [0.90, 0.95]
+    "Nhân viên vận hành": [0.90, 0.90]
+    "Khách hàng": [0.95, 0.80]
+    "Tài xế": [0.90, 0.80]
+    "Nhà cung cấp thanh toán": [0.55, 0.85]
+    "Nhà cung cấp thông báo": [0.50, 0.55]
 ```

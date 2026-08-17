@@ -92,3 +92,37 @@ Cung cấp dữ liệu và báo cáo để ban lãnh đạo theo dõi hoạt đ�
 Xây dựng hệ thống ổn định, bảo mật và có khả năng mở rộng trong tương lai
 
 B4 Xác định phạm vi cần làm cho dự án trong 7 tuần
+| Phạm vi                    | Nội dung cần thực hiện                                                                    |
+| -------------------------- | ----------------------------------------------------------------------------------------- |
+| **Quản lý tài khoản**      | Đăng ký, đăng nhập, cập nhật thông tin khách hàng và tài xế                               |
+| **Đặt xe**                 | Nhập điểm đón, điểm đến, chọn loại xe và gửi yêu cầu                                      |
+| **Tìm & phân công tài xế** | Tìm tài xế phù hợp dựa trên vị trí và trạng thái; xử lý trường hợp từ chối/không phản hồi |
+| **Quản lý chuyến đi**      | Tài xế nhận chuyến, cập nhật trạng thái; khách hàng theo dõi chuyến                       |
+| **Tính cước & thanh toán** | Tính số tiền phải trả, hỗ trợ tiền mặt và thanh toán điện tử                              |
+| **Thông báo**              | Thông báo đặt xe, tài xế nhận chuyến, tài xế đến, hoàn thành chuyến và kết quả thanh toán |
+| **Quản trị vận hành**      | Quản lý khách hàng, tài xế, phương tiện và chuyến đi; xử lý sự cố                         |
+| **Báo cáo**                | Số lượng chuyến, doanh thu, tỷ lệ hoàn thành, tỷ lệ hủy và hiệu quả tài xế                |
+| **Bảo mật**                | Xác thực người dùng, phân quyền quản trị và bảo vệ dữ liệu                                |
+| **Kiểm thử & triển khai**  | Kiểm thử các nghiệp vụ chính, xử lý lỗi và triển khai hệ thống                            |
+
+| Tuần       | Công việc                                               |
+| ---------- | ------------------------------------------------------- |
+| **Tuần 1** | Phân tích nghiệp vụ, stakeholder, phạm vi và yêu cầu    |
+| **Tuần 2** | Thiết kế Use Case, quy trình nghiệp vụ và cơ sở dữ liệu |
+| **Tuần 3** | Xây dựng quản lý tài khoản + đặt xe                     |
+| **Tuần 4** | Xây dựng tìm/phân công tài xế + quản lý chuyến          |
+| **Tuần 5** | Tính cước, thanh toán + thông báo                       |
+| **Tuần 6** | Quản trị vận hành + báo cáo + phân quyền                |
+| **Tuần 7** | Tích hợp, kiểm thử, sửa lỗi và triển khai               |
+
+ B5 chuyển các yêu cầu thành các yêu cầu nghiệp vụ (bussiness requiment)
+ | Mã        | Business Requirement                                                            |
+| --------- | ------------------------------------------------------------------------------- |
+| **BR-01** | Cung cấp nền tảng đặt xe trực tuyến cho khách hàng.                             |
+| **BR-02** | Tự động tìm kiếm và phân công tài xế phù hợp.                                   |
+| **BR-03** | Cho phép khách hàng theo dõi trạng thái chuyến đi.                              |
+| **BR-04** | Quản lý toàn bộ thông tin và trạng thái chuyến xe.                              |
+| **BR-05** | Hỗ trợ tính cước và thanh toán.                                                 |
+| **BR-06** | Hỗ trợ nhân viên vận hành quản lý khách hàng, tài xế, phương tiện và chuyến đi. |
+| **BR-07** | Cung cấp thông báo và dữ liệu cần thiết cho các bên liên quan.                  |
+| **BR-08** | Đảm bảo bảo mật và khả năng mở rộng của hệ thống.                               |

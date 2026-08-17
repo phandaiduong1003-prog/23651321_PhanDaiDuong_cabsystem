@@ -176,7 +176,7 @@ b6 phân rã ra các yêu cầu chức năng
 | FR-04.8 | Cho phép xử lý lại giao dịch theo chính sách doanh nghiệp |
 
 5. BR-05 – Thông báo
-6. 
+   
 | Mã      | Yêu cầu chức năng                           |
 | ------- | ------------------------------------------- |
 | FR-05.1 | Thông báo khi yêu cầu đặt xe được tiếp nhận |

@@ -77,3 +77,17 @@ quadrantChart
     "Nhà cung cấp thanh toán": [0.55, 0.85]
     "Nhà cung cấp thông báo": [0.50, 0.55]
 ```
+B3 Mục đích của nghiệp vụ
+
+Mục đích của nghiệp vụ trong hệ thống CAB là:
+
+Quản lý quy trình đặt xe từ khi khách hàng tạo yêu cầu đến khi hoàn thành chuyến.
+Tìm kiếm và phân công tài xế phù hợp, ưu tiên tài xế gần khách hàng.
+Theo dõi trạng thái chuyến đi và cung cấp thông tin cho khách hàng, tài xế.
+Tính cước và quản lý thanh toán cho các chuyến xe.
+Quản lý thông tin khách hàng, tài xế, phương tiện và chuyến đi tập trung.
+Hỗ trợ nhân viên vận hành theo dõi, xử lý các trường hợp phát sinh.
+Cung cấp dữ liệu và báo cáo để ban lãnh đạo theo dõi hoạt động kinh doanh.
+Xây dựng hệ thống ổn định, bảo mật và có khả năng mở rộng trong tương lai
+
+B4 Xác định phạm vi cần làm cho dự án trong 7 tuần

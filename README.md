@@ -36,7 +36,8 @@ Xây dựng một nền tảng CAB mới nhằm:
 | Thanh toán phân tán       | Khó quản lý tập trung thông tin thanh toán              |
 | Khó mở rộng               | Hệ thống hiện tại khó đáp ứng khi lượng người dùng tăng |
 
-## 5. Các bên liên quan (Stakeholder)
+B2
+ Các bên liên quan (Stakeholder)
 
 | Tên                     | Vai trò                                                               |
 | ----------------------- | --------------------------------------------------------------------- |

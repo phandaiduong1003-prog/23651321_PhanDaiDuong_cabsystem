@@ -661,4 +661,68 @@ Yêu cầu khách hàng cũng quy định người dùng phải được xác th
 ---
 
 # 9. Phân tích quy trình nghiệp vụ
-# 10. Phân tích quy tắc nghiệp vụ 
+Bước 1: Khởi tạo yêu cầu đặt xe
+
+Khách hàng nhập địa điểm đón, điểm đến và lựa chọn loại xe trên ứng dụng.
+
+Hệ thống tính toán sơ bộ khoảng cách, thời gian và hiển thị cước phí dự kiến.
+
+Khách hàng xác nhận thông tin và bấm đặt xe để gửi yêu cầu lên hệ thống.
+
+Bước 2: Tìm kiếm và điều phối tài xế
+
+Hệ thống quét và lọc các tài xế đang ở trạng thái Sẵn sàng (Online) gần vị trí điểm đón.
+
+Sắp xếp danh sách tài xế ưu tiên dựa trên khoảng cách di chuyển, loại xe và các chỉ số vận hành.
+
+Gửi lời mời nhận chuyến kèm thời gian đếm ngược (ví dụ: 15–30 giây) cho tài xế đầu tiên.
+
+Rẽ nhánh A (Tài xế chấp nhận): Hệ thống gán chuyến, đổi trạng thái tài xế sang Đang bận (Busy), đồng thời gửi thông báo kèm thông tin tài xế, biển số xe và thời gian dự kiến đến cho khách hàng.
+
+Rẽ nhánh B (Từ chối / Quá giờ): Hệ thống tự động chuyển lời mời đến tài xế tiếp theo mà khách hàng không cần thao tác lại. Nếu duyệt hết danh sách vẫn không có tài xế nhận, hệ thống gửi thông báo không tìm được xe cho khách hàng.
+
+Bước 3: Thực hiện chuyến đi
+
+Tài xế di chuyển đến điểm đón và bấm cập nhật "Đã đến điểm đón" (hệ thống gửi thông báo cho khách hàng).
+
+Khi khách lên xe, tài xế xác nhận "Đã đón khách" và bắt đầu hành trình.
+
+Trong suốt chuyến đi, ứng dụng tài xế gửi dữ liệu GPS định kỳ về hệ thống để hiển thị vị trí thời gian thực trên màn hình của khách hàng.
+
+Đến nơi, tài xế xác nhận "Hoàn thành chuyến đi".
+
+Bước 4: Tính cước và thanh toán
+
+Hệ thống xác định tổng số tiền thanh toán chính thức dựa trên loại dịch vụ, lộ trình và chính sách giá.
+
+Tiền mặt: Khách hàng trả tiền mặt cho tài xế; tài xế xác nhận đã thu đủ tiền trên ứng dụng.
+
+Thanh toán điện tử: Hệ thống gửi yêu cầu gạch nợ đến đơn vị thanh toán bên ngoài (qua cơ chế Tokenization).
+
+Nếu thành công: Lưu lịch sử giao dịch và gửi thông báo kết quả cho khách hàng.
+
+Nếu thất bại: Thông báo cho khách hàng và cho phép chuyển sang thanh toán tiền mặt hoặc thử lại giao dịch.
+
+Bước 5: Đánh giá sau chuyến đi
+
+Sau khi hoàn tất thanh toán, khách hàng có thể chọn số sao (1-5 sao) và để lại phản hồi về chất lượng dịch vụ.
+
+Hệ thống lưu dữ liệu đánh giá và tính lại điểm xếp hạng trung bình cho tài xế.
+
+# 10. Phân tích quy tắc nghiệp vụ (Business Rules)
+
+Các quy tắc nghiệp vụ dưới đây mô tả các điều kiện, ràng buộc và cách xử lý mà hệ thống CAB phải tuân thủ trong quá trình tìm tài xế, thực hiện chuyến, tính cước, thanh toán, đánh giá và vận hành. Các tham số chưa được doanh nghiệp chốt cần được xác nhận với các bên liên quan trước khi triển khai chính thức.
+
+| Mã quy tắc | Tên quy tắc nghiệp vụ                         | Chi tiết quy tắc                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BR-R01** | **Điều kiện tài xế nhận chuyến**              | Tài xế chỉ được nhận thông báo/lời mời chuyến khi đồng thời thỏa mãn: (1) trạng thái làm việc là **Sẵn sàng (Online)**; (2) hồ sơ cá nhân hợp lệ; (3) bằng lái còn hiệu lực và đã được xác thực; (4) giấy tờ phương tiện còn hiệu lực và đã được xác thực. Nếu một trong các điều kiện không đạt, tài xế không được đưa vào danh sách nhận chuyến.                                                                                                                |
+| **BR-R02** | **Cập nhật trạng thái tài xế tự động**        | Khi tài xế bấm **Chấp nhận** chuyến, hệ thống phải chuyển trạng thái tài xế sang **Đang bận (Busy)** và loại tài xế khỏi danh sách nhận chuyến mới. Tài xế chỉ được chuyển về **Sẵn sàng (Online)** sau khi chuyến kết thúc hoàn toàn hoặc được hủy hợp lệ theo chính sách của hệ thống.                                                                                                                                                                          |
+| **BR-R03** | **Tiêu chí ưu tiên điều phối tài xế**         | Hệ thống phải lọc và xếp hạng tài xế theo thứ tự ưu tiên dựa trên: (1) mức độ phù hợp giữa loại phương tiện đăng ký và loại xe khách yêu cầu; (2) khoảng cách hoặc thời gian di chuyển dự kiến từ vị trí hiện tại của tài xế đến điểm đón; (3) điểm đánh giá (Rating) và tỷ lệ nhận chuyến. Tiêu chí, trọng số và thứ tự ưu tiên chi tiết cần được doanh nghiệp xác nhận.                                                                                         |
+| **BR-R04** | **Giới hạn thời gian phản hồi lời mời**       | Mỗi lời mời chuyến gửi đến tài xế phải có thời gian phản hồi giới hạn. Nếu tài xế không bấm **Chấp nhận** trong thời gian quy định, hệ thống tự động coi lời mời là **Không phản hồi/Từ chối** và chuyển sang tài xế tiếp theo. Thời gian mặc định đề xuất là **15–30 giây** và cần được doanh nghiệp xác nhận.                                                                                                                                                   |
+| **BR-R05** | **Tìm kiếm tài xế thay thế liên tục**         | Khi tài xế từ chối hoặc không phản hồi lời mời, hệ thống phải tự động chuyển yêu cầu đến tài xế phù hợp tiếp theo trong danh sách, tối đa **N tài xế** theo cấu hình, mà không yêu cầu khách hàng tạo lại yêu cầu đặt xe. Nếu đã thử hết số lượng tài xế cho phép mà vẫn không có tài xế nhận chuyến, hệ thống thông báo kết quả cho khách hàng. Giá trị **N** cần được xác nhận.                                                                                 |
+| **BR-R06** | **Công thức tính cước chuyến đi**             | Tổng tiền chuyến đi được xác định theo công thức: **Tổng tiền = Cước mở cửa + (Quãng đường × Đơn giá/km) + (Thời gian di chuyển × Đơn giá/phút) × Hệ số điều chỉnh**. Hệ số điều chỉnh có thể áp dụng cho các trường hợp như **giờ cao điểm hoặc thời tiết** theo chính sách doanh nghiệp. Các khoản phụ phí hợp lệ như **vé cầu đường, phí bến bãi** được cộng vào hóa đơn cuối cùng. Bảng giá, đơn giá, cách làm tròn và thời điểm chốt cước cần được xác nhận. |
+| **BR-R07** | **An toàn dữ liệu thanh toán (Tokenization)** | Hệ thống CAB không được lưu trữ trực tiếp dữ liệu nhạy cảm của phương thức thanh toán như **PAN/số thẻ, CVV/CVC, OTP hoặc mật khẩu thanh toán**. Thanh toán điện tử phải được thực hiện thông qua nhà cung cấp thanh toán và hệ thống CAB chỉ lưu **token/mã định danh giao dịch** cùng các thông tin cần thiết để đối soát.                                                                                                                                      |
+| **BR-R08** | **Xử lý sự cố thanh toán điện tử**            | Khi thanh toán điện tử thất bại do lỗi mạng, số dư không đủ hoặc nguyên nhân khác: (1) giao dịch được ghi nhận là thất bại và chuyến được giữ ở trạng thái **Chờ thanh toán** theo chính sách; (2) hệ thống thông báo ngay cho khách hàng và hiển thị nguyên nhân nếu nhà cung cấp thanh toán trả về thông tin phù hợp; (3) khách hàng được phép chọn phương thức thanh toán thay thế như **Tiền mặt** hoặc **Thẻ/Ví khác**.                                      |
+| **BR-R09** | **Điều kiện đánh giá chuyến đi**              | Khách hàng chỉ được đánh giá đối với chuyến có trạng thái **Hoàn thành**. Mỗi chuyến chỉ được đánh giá tối đa **01 lần** và thời gian cho phép đánh giá là **24 giờ kể từ thời điểm kết thúc chuyến**. Sau khi quá thời hạn hoặc đã đánh giá, hệ thống không cho phép gửi thêm đánh giá cho chuyến đó.                                                                                                                                                            |
+| **BR-R10** | **Phân quyền và ghi vết thao tác vận hành**   | Nhân viên vận hành chỉ được truy cập và thực hiện thao tác trong phạm vi quyền được cấp theo **RBAC (Role-Based Access Control)**. Các thao tác có ảnh hưởng lớn đến dữ liệu hoặc tài chính, ví dụ **hủy chuyến thủ công, điều chỉnh cước, khóa tài khoản, hoàn tiền**, bắt buộc phải ghi **Audit Log** gồm tối thiểu: ID người thực hiện, thời gian, loại thao tác, lý do và giá trị trước/sau thay đổi khi có.                                                  |
+

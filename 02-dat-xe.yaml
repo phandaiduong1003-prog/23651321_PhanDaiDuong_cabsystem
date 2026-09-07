@@ -1,0 +1,112 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Nghiệp vụ Đặt xe
+  version: 1.0.0
+  description: Tài liệu API riêng cho nghiệp vụ đặt xe, được tách từ file OpenAPI tổng của hệ thống CAB và bám theo README
+    dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Booking
+  description: UC02 - Đặt xe
+paths:
+  /bookings:
+    post:
+      tags:
+      - Booking
+      summary: Tạo yêu cầu đặt xe
+      description: 'Ánh xạ FR-07 đến FR-11 và UC02.
+
+        Khách hàng cung cấp điểm đón, điểm đến và loại xe,
+
+        sau đó xác nhận để hệ thống tạo yêu cầu đặt xe.
+
+        '
+      operationId: createBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingRequest'
+      responses:
+        '201':
+          description: Yêu cầu đặt xe được ghi nhận và chuyển sang bước tìm tài xế.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Điểm đón, điểm đến, loại xe hoặc thông tin bắt buộc không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Khách hàng chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Không thể ghi nhận yêu cầu đặt xe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    BookingRequest:
+      type: object
+      properties:
+        pickupLocation:
+          $ref: '#/components/schemas/LocationInput'
+        destination:
+          $ref: '#/components/schemas/LocationInput'
+        vehicleType:
+          type: string
+          description: Loại xe khách hàng mong muốn; danh sách loại xe chưa được README chốt.
+      required:
+      - pickupLocation
+      - destination
+      - vehicleType
+    Booking:
+      type: object
+      properties:
+        bookingId:
+          type: string
+        pickupLocation:
+          $ref: '#/components/schemas/LocationInput'
+        destination:
+          $ref: '#/components/schemas/LocationInput'
+        vehicleType:
+          type: string
+        status:
+          type: string
+          description: Trạng thái yêu cầu đặt xe; bộ giá trị chi tiết chưa được README chốt.
+      required:
+      - bookingId
+      - pickupLocation
+      - destination
+      - vehicleType
+    LocationInput:
+      type: object
+      description: 'Điểm đón hoặc điểm đến. README yêu cầu địa điểm nhưng chưa quy định
+
+        phải truyền địa chỉ chữ, tọa độ hay mã bản đồ cụ thể.
+
+        '
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

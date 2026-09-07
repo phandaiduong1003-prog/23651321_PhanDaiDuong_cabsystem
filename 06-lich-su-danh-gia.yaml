@@ -1,0 +1,236 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Nghiệp vụ Lịch sử và đánh giá chuyến
+  version: 1.0.0
+  description: Tài liệu API riêng cho nghiệp vụ lịch sử và đánh giá chuyến, được tách từ file OpenAPI tổng của hệ thống CAB
+    và bám theo README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: HistoryRating
+  description: UC08 - Lịch sử và đánh giá chuyến
+paths:
+  /customers/me/trips:
+    get:
+      tags:
+      - HistoryRating
+      summary: Xem lịch sử chuyến
+      description: Ánh xạ FR-39 và UC08.
+      operationId: getMyTripHistory
+      responses:
+        '200':
+          description: Danh sách các chuyến đã thực hiện.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TripHistoryItem'
+        '401':
+          description: Khách hàng chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /customers/me/trips/{tripId}:
+    get:
+      tags:
+      - HistoryRating
+      summary: Xem chi tiết một chuyến trong lịch sử
+      description: 'Ánh xạ FR-40 và UC08.
+
+        Hệ thống hiển thị chi tiết chuyến và số tiền tương ứng.
+
+        '
+      operationId: getMyTripHistoryDetail
+      parameters:
+      - name: tripId
+        in: path
+        required: true
+        description: Mã chuyến đi.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Chi tiết chuyến và số tiền.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripHistoryDetail'
+        '401':
+          description: Khách hàng chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Chuyến không thuộc khách hàng hiện tại.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /trips/{tripId}/ratings:
+    post:
+      tags:
+      - HistoryRating
+      summary: Đánh giá tài xế sau chuyến
+      description: 'Ánh xạ FR-41, UC08 và BR-R09.
+
+        Chỉ chuyến đã hoàn thành mới được đánh giá; mỗi chuyến tối đa một lần.
+
+        README quy định mức đánh giá 1-5 sao và thời hạn 24 giờ.
+
+        '
+      operationId: rateTrip
+      parameters:
+      - name: tripId
+        in: path
+        required: true
+        description: Mã chuyến đi.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingRequest'
+      responses:
+        '201':
+          description: Đánh giá được lưu thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+        '400':
+          description: Điểm đánh giá không hợp lệ hoặc chuyến chưa hoàn thành.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Khách hàng chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Khách hàng không có quyền đánh giá chuyến này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Chuyến đã được đánh giá hoặc đã quá thời hạn đánh giá.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Trip:
+      type: object
+      properties:
+        tripId:
+          type: string
+        driverId:
+          type: string
+          nullable: true
+        status:
+          type: string
+          description: Trạng thái hiện tại của chuyến.
+      required:
+      - tripId
+      - status
+    TripHistoryItem:
+      type: object
+      properties:
+        tripId:
+          type: string
+        status:
+          type: string
+        amount:
+          type: number
+          format: double
+      required:
+      - tripId
+    TripHistoryDetail:
+      type: object
+      properties:
+        trip:
+          $ref: '#/components/schemas/Trip'
+        amount:
+          type: number
+          format: double
+      required:
+      - trip
+      - amount
+    RatingRequest:
+      type: object
+      properties:
+        stars:
+          type: integer
+          minimum: 1
+          maximum: 5
+        feedback:
+          type: string
+          description: Phản hồi của khách hàng về chất lượng dịch vụ.
+      required:
+      - stars
+    Rating:
+      type: object
+      properties:
+        tripId:
+          type: string
+        stars:
+          type: integer
+          minimum: 1
+          maximum: 5
+        feedback:
+          type: string
+      required:
+      - tripId
+      - stars
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

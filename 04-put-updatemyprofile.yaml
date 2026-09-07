@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Cập nhật hồ sơ cá nhân
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API PUT /me/profile. Nội dung được tách nguyên từ tài liệu CAB System API dựa trên
+    README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Account
+  description: UC01 - Quản lý tài khoản và hồ sơ
+paths:
+  /me/profile:
+    put:
+      tags:
+      - Account
+      summary: Cập nhật hồ sơ cá nhân
+      description: Ánh xạ FR-03 và UC01.
+      operationId: updateMyProfile
+      requestBody:
+        required: true
+        description: Dữ liệu hồ sơ cần thay đổi. README chưa quy định danh sách trường cụ thể.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateRequest'
+      responses:
+        '200':
+          description: Cập nhật hồ sơ thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '400':
+          description: Dữ liệu hồ sơ không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Người dùng chưa được xác thực.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Profile:
+      type: object
+      description: Hồ sơ người dùng; các trường chi tiết chưa được README xác định.
+      additionalProperties: true
+    ProfileUpdateRequest:
+      type: object
+      description: Các thông tin cá nhân cần cập nhật; trường cụ thể chưa được README xác định.
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

@@ -1,0 +1,93 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Lấy số tiền của chuyến
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API GET /trips/{tripId}/fare. Nội dung được tách nguyên từ tài liệu CAB System API
+    dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Payment
+  description: UC06 - Tính cước và thanh toán
+paths:
+  /trips/{tripId}/fare:
+    get:
+      tags:
+      - Payment
+      summary: Lấy số tiền của chuyến
+      description: 'Ánh xạ FR-27, FR-28, UC06 và BR-R06.
+
+        README quy định hệ thống xác định số tiền phải thanh toán
+
+        dựa trên loại dịch vụ và thông tin của chuyến.
+
+        '
+      operationId: getTripFare
+      parameters:
+      - name: tripId
+        in: path
+        required: true
+        description: Mã chuyến đi.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Trả về thông tin cước của chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fare'
+        '401':
+          description: Người dùng chưa được xác thực.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Người dùng không có quyền xem chuyến này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Fare:
+      type: object
+      properties:
+        tripId:
+          type: string
+        amount:
+          type: number
+          format: double
+          description: Tổng số tiền của chuyến.
+        currency:
+          type: string
+          description: Đơn vị tiền tệ; README chưa quy định giá trị cụ thể.
+      required:
+      - tripId
+      - amount
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

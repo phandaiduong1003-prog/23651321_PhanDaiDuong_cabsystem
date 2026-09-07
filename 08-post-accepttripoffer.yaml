@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Tài xế chấp nhận lời mời chuyến
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API POST /trip-offers/{offerId}/accept. Nội dung được tách nguyên từ tài liệu CAB
+    System API dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Dispatch
+  description: UC03 - Tìm và phân công tài xế
+paths:
+  /trip-offers/{offerId}/accept:
+    post:
+      tags:
+      - Dispatch
+      summary: Tài xế chấp nhận lời mời chuyến
+      description: 'Ánh xạ FR-15, FR-16, FR-19 và UC03.
+
+        Khi tài xế chấp nhận, hệ thống ghi nhận tài xế được phân công cho chuyến.
+
+        '
+      operationId: acceptTripOffer
+      parameters:
+      - name: offerId
+        in: path
+        required: true
+        description: Mã lời mời chuyến do hệ thống tạo.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Tài xế được ghi nhận và gán cho chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripAssignment'
+        '401':
+          description: Tài xế chưa được xác thực.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Tài xế không đủ điều kiện nhận chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy lời mời chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Lời mời không còn ở trạng thái có thể chấp nhận.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    TripAssignment:
+      type: object
+      properties:
+        tripId:
+          type: string
+        driverId:
+          type: string
+        status:
+          type: string
+          description: Trạng thái chuyến sau khi phân công.
+      required:
+      - tripId
+      - driverId
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

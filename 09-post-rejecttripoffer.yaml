@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Tài xế từ chối lời mời chuyến
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API POST /trip-offers/{offerId}/reject. Nội dung được tách nguyên từ tài liệu CAB
+    System API dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Dispatch
+  description: UC03 - Tìm và phân công tài xế
+paths:
+  /trip-offers/{offerId}/reject:
+    post:
+      tags:
+      - Dispatch
+      summary: Tài xế từ chối lời mời chuyến
+      description: 'Ánh xạ FR-17, UC03 và BR-R05.
+
+        Sau khi tài xế từ chối, hệ thống tiếp tục chuyển yêu cầu
+
+        đến tài xế phù hợp tiếp theo.
+
+        '
+      operationId: rejectTripOffer
+      parameters:
+      - name: offerId
+        in: path
+        required: true
+        description: Mã lời mời chuyến do hệ thống tạo.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Ghi nhận từ chối; hệ thống tiếp tục quá trình điều phối.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: Tài xế chưa được xác thực.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy lời mời chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Lời mời không còn ở trạng thái có thể từ chối.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+      - message
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

@@ -1,0 +1,106 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Ghi nhận xử lý trường hợp chuyến gặp vấn đề
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API POST /admin/trips/{tripId}/issues. Nội dung được tách nguyên từ tài liệu CAB
+    System API dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Operation
+  description: UC09 - Quản lý vận hành
+paths:
+  /admin/trips/{tripId}/issues:
+    post:
+      tags:
+      - Operation
+      summary: Ghi nhận xử lý trường hợp chuyến gặp vấn đề
+      description: 'Ánh xạ FR-47 và UC09.
+
+        README yêu cầu nhân viên vận hành ghi nhận và xử lý trường hợp bất thường,
+
+        nhưng chưa quy định cấu trúc dữ liệu chi tiết.
+
+        '
+      operationId: recordTripIssueHandling
+      parameters:
+      - name: tripId
+        in: path
+        required: true
+        description: Mã chuyến đi.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripIssueRequest'
+      responses:
+        '201':
+          description: Kết quả xử lý được ghi nhận.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripIssue'
+        '400':
+          description: Dữ liệu ghi nhận không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Nhân viên chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Nhân viên không đủ quyền.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    TripIssueRequest:
+      type: object
+      description: 'Nội dung ghi nhận/xử lý trường hợp bất thường của chuyến.
+
+        README chưa quy định các trường chi tiết.
+
+        '
+      additionalProperties: true
+    TripIssue:
+      type: object
+      properties:
+        tripId:
+          type: string
+        issueId:
+          type: string
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

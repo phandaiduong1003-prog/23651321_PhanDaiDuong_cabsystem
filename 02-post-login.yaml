@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Đăng nhập hệ thống
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API POST /auth/login. Nội dung được tách nguyên từ tài liệu CAB System API dựa trên
+    README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Account
+  description: UC01 - Quản lý tài khoản và hồ sơ
+paths:
+  /auth/login:
+    post:
+      tags:
+      - Account
+      summary: Đăng nhập hệ thống
+      description: 'Ánh xạ FR-02, FR-54 và UC01/UC11.
+
+        README yêu cầu xác thực người dùng nhưng không quy định JWT,
+
+        session hay loại token cụ thể.
+
+        '
+      operationId: login
+      requestBody:
+        required: true
+        description: Thông tin xác thực. Các trường cụ thể chưa được README xác định.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Đăng nhập thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResult'
+        '400':
+          description: Thiếu dữ liệu đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Thông tin xác thực không chính xác.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      description: 'Thông tin xác thực. README chưa quy định tên đăng nhập,
+
+        mật khẩu, OTP hay cơ chế xác thực cụ thể.
+
+        '
+      additionalProperties: true
+    LoginResult:
+      type: object
+      description: 'Kết quả xác thực. README chưa quy định loại token/session,
+
+        vì vậy không tự khai báo accessToken hoặc JWT.
+
+        '
+      properties:
+        authenticated:
+          type: boolean
+        role:
+          type: string
+          description: Vai trò được hệ thống xác định sau khi xác thực.
+      required:
+      - authenticated
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

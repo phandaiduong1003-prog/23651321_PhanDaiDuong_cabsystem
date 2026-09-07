@@ -1,0 +1,68 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Tra cứu thông tin phương tiện
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API GET /admin/vehicles. Nội dung được tách nguyên từ tài liệu CAB System API dựa
+    trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Operation
+  description: UC09 - Quản lý vận hành
+paths:
+  /admin/vehicles:
+    get:
+      tags:
+      - Operation
+      summary: Tra cứu thông tin phương tiện
+      description: Ánh xạ FR-44 và UC09.
+      operationId: getVehiclesForOperation
+      responses:
+        '200':
+          description: Danh sách phương tiện.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vehicle'
+        '401':
+          description: Nhân viên chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Nhân viên không đủ quyền.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Vehicle:
+      type: object
+      description: Dữ liệu phương tiện; README chưa quy định cấu trúc trường chi tiết.
+      properties:
+        vehicleId:
+          type: string
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

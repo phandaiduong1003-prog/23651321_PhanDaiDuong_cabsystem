@@ -1,0 +1,99 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Cập nhật trạng thái hoạt động của tài xế
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API PUT /drivers/me/status. Nội dung được tách nguyên từ tài liệu CAB System API
+    dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Account
+  description: UC01 - Quản lý tài khoản và hồ sơ
+paths:
+  /drivers/me/status:
+    put:
+      tags:
+      - Account
+      summary: Cập nhật trạng thái hoạt động của tài xế
+      description: 'Ánh xạ FR-06 và BR-R02.
+
+        Tài xế có thể chuyển trạng thái hoạt động; khi đã nhận chuyến,
+
+        hệ thống có thể tự chuyển tài xế sang trạng thái Busy.
+
+        '
+      operationId: updateDriverWorkingStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverStatusRequest'
+      responses:
+        '200':
+          description: Trạng thái được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverStatus'
+        '400':
+          description: Trạng thái không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Tài xế chưa được xác thực.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Người dùng không có quyền của tài xế.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    DriverStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - ONLINE
+          - OFFLINE
+          description: Trạng thái tài xế chủ động lựa chọn.
+      required:
+      - status
+    DriverStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - ONLINE
+          - OFFLINE
+          - BUSY
+      required:
+      - status
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

@@ -1,0 +1,116 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Tài xế cập nhật trạng thái chuyến
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API PUT /trips/{tripId}/status. Nội dung được tách nguyên từ tài liệu CAB System
+    API dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Trip
+  description: UC04, UC05 - Quản lý và theo dõi chuyến đi
+paths:
+  /trips/{tripId}/status:
+    put:
+      tags:
+      - Trip
+      summary: Tài xế cập nhật trạng thái chuyến
+      description: 'Ánh xạ FR-21 đến FR-24 và UC04.
+
+        Các giai đoạn được README nêu gồm: tới điểm đón, đã đón khách,
+
+        đang thực hiện chuyến và hoàn tất.
+
+        '
+      operationId: updateTripStatus
+      parameters:
+      - name: tripId
+        in: path
+        required: true
+        description: Mã chuyến đi.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripStatusRequest'
+      responses:
+        '200':
+          description: Trạng thái chuyến được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '400':
+          description: Trạng thái hoặc dữ liệu cập nhật không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Tài xế chưa được xác thực.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Tài xế không được phân công cho chuyến này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    TripStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - ARRIVED_AT_PICKUP
+          - PICKED_UP
+          - IN_PROGRESS
+          - COMPLETED
+      required:
+      - status
+    Trip:
+      type: object
+      properties:
+        tripId:
+          type: string
+        driverId:
+          type: string
+          nullable: true
+        status:
+          type: string
+          description: Trạng thái hiện tại của chuyến.
+      required:
+      - tripId
+      - status
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

@@ -1,0 +1,67 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Xem lịch sử chuyến
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API GET /customers/me/trips. Nội dung được tách nguyên từ tài liệu CAB System API
+    dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: HistoryRating
+  description: UC08 - Lịch sử và đánh giá chuyến
+paths:
+  /customers/me/trips:
+    get:
+      tags:
+      - HistoryRating
+      summary: Xem lịch sử chuyến
+      description: Ánh xạ FR-39 và UC08.
+      operationId: getMyTripHistory
+      responses:
+        '200':
+          description: Danh sách các chuyến đã thực hiện.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TripHistoryItem'
+        '401':
+          description: Khách hàng chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    TripHistoryItem:
+      type: object
+      properties:
+        tripId:
+          type: string
+        status:
+          type: string
+        amount:
+          type: number
+          format: double
+      required:
+      - tripId
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

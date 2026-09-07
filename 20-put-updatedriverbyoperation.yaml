@@ -1,0 +1,101 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Cập nhật dữ liệu tài xế
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API PUT /admin/drivers/{driverId}. Nội dung được tách nguyên từ tài liệu CAB System
+    API dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Operation
+  description: UC09 - Quản lý vận hành
+paths:
+  /admin/drivers/{driverId}:
+    put:
+      tags:
+      - Operation
+      summary: Cập nhật dữ liệu tài xế
+      description: 'Ánh xạ FR-43 và UC09.
+
+        README chưa quy định cụ thể các trường nhân viên vận hành được phép thay đổi.
+
+        '
+      operationId: updateDriverByOperation
+      parameters:
+      - name: driverId
+        in: path
+        required: true
+        description: Mã tài xế.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OperationUpdateRequest'
+      responses:
+        '200':
+          description: Dữ liệu tài xế được cập nhật.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        '400':
+          description: Dữ liệu cập nhật không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Nhân viên chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Nhân viên không đủ quyền.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy tài xế.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Driver:
+      type: object
+      description: Dữ liệu tài xế; README chưa quy định cấu trúc trường chi tiết.
+      properties:
+        driverId:
+          type: string
+        status:
+          type: string
+      additionalProperties: true
+    OperationUpdateRequest:
+      type: object
+      description: Dữ liệu cập nhật của nhân viên vận hành; README chưa quy định trường cụ thể.
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

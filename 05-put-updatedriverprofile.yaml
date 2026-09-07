@@ -1,0 +1,85 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Cập nhật hồ sơ và dữ liệu phương tiện của tài xế
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API PUT /drivers/me/profile. Nội dung được tách nguyên từ tài liệu CAB System API
+    dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Account
+  description: UC01 - Quản lý tài khoản và hồ sơ
+paths:
+  /drivers/me/profile:
+    put:
+      tags:
+      - Account
+      summary: Cập nhật hồ sơ và dữ liệu phương tiện của tài xế
+      description: 'Ánh xạ FR-05 và UC01.
+
+        README cho phép tài xế bổ sung/thay đổi hồ sơ và dữ liệu phương tiện,
+
+        nhưng chưa quy định chi tiết các trường.
+
+        '
+      operationId: updateDriverProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverProfileUpdateRequest'
+      responses:
+        '200':
+          description: Cập nhật thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+        '400':
+          description: Dữ liệu không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Tài xế chưa được xác thực.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Người dùng không có quyền của tài xế.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    DriverProfile:
+      type: object
+      description: Hồ sơ tài xế và dữ liệu phương tiện; trường cụ thể chưa được README xác định.
+      additionalProperties: true
+    DriverProfileUpdateRequest:
+      type: object
+      description: Dữ liệu hồ sơ/phương tiện tài xế cần thay đổi.
+      additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

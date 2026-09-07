@@ -1,0 +1,122 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Đánh giá tài xế sau chuyến
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API POST /trips/{tripId}/ratings. Nội dung được tách nguyên từ tài liệu CAB System
+    API dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: HistoryRating
+  description: UC08 - Lịch sử và đánh giá chuyến
+paths:
+  /trips/{tripId}/ratings:
+    post:
+      tags:
+      - HistoryRating
+      summary: Đánh giá tài xế sau chuyến
+      description: 'Ánh xạ FR-41, UC08 và BR-R09.
+
+        Chỉ chuyến đã hoàn thành mới được đánh giá; mỗi chuyến tối đa một lần.
+
+        README quy định mức đánh giá 1-5 sao và thời hạn 24 giờ.
+
+        '
+      operationId: rateTrip
+      parameters:
+      - name: tripId
+        in: path
+        required: true
+        description: Mã chuyến đi.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingRequest'
+      responses:
+        '201':
+          description: Đánh giá được lưu thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rating'
+        '400':
+          description: Điểm đánh giá không hợp lệ hoặc chuyến chưa hoàn thành.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Khách hàng chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Khách hàng không có quyền đánh giá chuyến này.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Không tìm thấy chuyến.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Chuyến đã được đánh giá hoặc đã quá thời hạn đánh giá.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    RatingRequest:
+      type: object
+      properties:
+        stars:
+          type: integer
+          minimum: 1
+          maximum: 5
+        feedback:
+          type: string
+          description: Phản hồi của khách hàng về chất lượng dịch vụ.
+      required:
+      - stars
+    Rating:
+      type: object
+      properties:
+        tripId:
+          type: string
+        stars:
+          type: integer
+          minimum: 1
+          maximum: 5
+        feedback:
+          type: string
+      required:
+      - tripId
+      - stars
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

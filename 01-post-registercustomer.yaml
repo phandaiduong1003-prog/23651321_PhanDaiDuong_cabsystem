@@ -1,0 +1,84 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Đăng ký tài khoản khách hàng
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API POST /auth/register. Nội dung được tách nguyên từ tài liệu CAB System API dựa
+    trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Account
+  description: UC01 - Quản lý tài khoản và hồ sơ
+paths:
+  /auth/register:
+    post:
+      tags:
+      - Account
+      summary: Đăng ký tài khoản khách hàng
+      description: 'Ánh xạ FR-01 và UC01.
+
+        README chỉ yêu cầu khách hàng có thể tạo tài khoản mới,
+
+        nhưng chưa quy định cụ thể các trường đăng ký.
+
+        '
+      operationId: registerCustomer
+      requestBody:
+        required: true
+        description: Thông tin đăng ký theo chính sách tài khoản của doanh nghiệp.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Tạo tài khoản thành công.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResult'
+        '400':
+          description: Dữ liệu đăng ký thiếu hoặc không hợp lệ.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      description: 'Thông tin tạo tài khoản. README chưa quy định tên các trường
+
+        như username/email/số điện thoại nên không tự thêm trường cụ thể.
+
+        '
+      additionalProperties: true
+    AccountResult:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: Mã tài khoản do hệ thống tạo.
+        message:
+          type: string
+      required:
+      - accountId
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message

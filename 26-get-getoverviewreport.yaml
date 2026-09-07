@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: CAB System API - Xem báo cáo tổng quan
+  version: 1.0.0
+  description: Tài liệu OpenAPI riêng cho API GET /admin/reports/overview. Nội dung được tách nguyên từ tài liệu CAB System
+    API dựa trên README dự án.
+servers:
+- url: /api/v1
+  description: Base path đề xuất. README chưa quy định host/port triển khai thực tế.
+tags:
+- name: Report
+  description: UC10 - Quản lý giao dịch và báo cáo
+paths:
+  /admin/reports/overview:
+    get:
+      tags:
+      - Report
+      summary: Xem báo cáo tổng quan
+      description: 'Ánh xạ FR-50 đến FR-53 và UC10.
+
+        Báo cáo gồm số lượng chuyến, doanh thu, tỷ lệ hoàn thành,
+
+        tỷ lệ hủy và thông tin phục vụ đánh giá hiệu quả tài xế.
+
+        '
+      operationId: getOverviewReport
+      responses:
+        '200':
+          description: Báo cáo tổng quan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OverviewReport'
+        '401':
+          description: Người dùng chưa đăng nhập.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Người dùng không có quyền xem báo cáo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Hệ thống không thể xử lý yêu cầu.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    OverviewReport:
+      type: object
+      properties:
+        tripCount:
+          type: integer
+          description: Số lượng chuyến.
+        revenue:
+          type: number
+          format: double
+          description: Doanh thu.
+        completionRate:
+          type: number
+          format: double
+          description: Tỷ lệ hoàn thành.
+        cancellationRate:
+          type: number
+          format: double
+          description: Tỷ lệ hủy.
+        driverPerformance:
+          type: object
+          description: 'Số liệu phục vụ đánh giá hiệu quả hoạt động tài xế.
+
+            README chưa quy định công thức/chỉ số con cụ thể.
+
+            '
+          additionalProperties: true
+    Error:
+      type: object
+      properties:
+        error_code:
+          type: string
+          description: Mã lỗi kỹ thuật/nghiệp vụ.
+        message:
+          type: string
+          description: Nội dung mô tả lỗi.
+      required:
+      - error_code
+      - message
